@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head"/>
+<body>
+<head th:replace="fragments/nav"/>
+<div class="container" id="main-container">
+    <h2 th:text="#{offer.list.title}"></h2>
+    <p th:text="#{offer.list.search.title}"></p>
+    <form class="form-inline" action="/offer/list">
+        <div class="form-group">
+            <input id="searchText" name="searchText" type="text" class="form-control" size="50"
+                   th:value="${searchText}" th:placeholder="#{offer.list.search.title}" >
+        </div>
+        <button type="submit" class="btn btn-primary" th:text="#{offer.list.search}"></button>
+    </form>
+    <p th:text="#{offer.list.msg}"></p>
+    <button type="button" id="updateButton" class="btn btn-primary" th:text="#{user.list.btn.act}"></button>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $( "#updateButton" ).click(function() {
+            let numberPage = [[${param.page}]];
+            let urlUpdate = '/offer/list/update';
+            if (numberPage != null ){
+                urlUpdate += "?page="+numberPage[0];
+            }
+            $("#tableOffers").load(urlUpdate);
+        });
+        /*]]>*/
+    </script>
+    <div class="table-responsive">
+        <table class="table table-hover" th:fragment="tableOffers" id="tableOffers">
+            <thead>
+            <tr>
+                <th scope="col" th:text="#{offer.list.data.image}"></th>
+                <th scope="col" th:text="#{offer.list.data.title}"></th>
+                <th scope="col" th:text="#{offer.list.data.description}"></th>
+                <th scope="col" th:text="#{offer.list.data.details}"></th>
+                <th scope="col" th:text="#{offer.list.data.price}"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="filas-list-offers" th:each="offer : ${offerList}">
+                <td>
+                    <img th:if="${offer.image != null and offer.image != ''}" th:src="${offer.image}"
+                         width="56" height="56" style="object-fit: cover;">
+                    <img th:unless="${offer.image != null and offer.image != ''}" src="/images/example.png"
+                         width="56" height="56"/>
+                </td>
+                <td th:text="${offer.title}"></td>
+                <td th:text="${offer.description}"></td>
+                <td th:text="${offer.details}"></td>
+                <td th:text="${#strings.concat(offer.price,'€')}"></td>
+                <td>
+                    <div th:if="${offer.isSold()==false}">
+                        <a th:href="${'/offer/buy?id='+ offer.id + '&page=' + (page != null ? page.getNumber() : '0') +
+                         (searchText != null ? '&searchText=' + searchText : '')}"
+                           th:text="#{offer.list.buy}"></a>
+                    </div>
+                    <div th:if="${offer.isSold()==true}">
+                        <a th:text="#{offer.list.sold}"></a>
+                    </div>
+                </td>
+                <td><a th:if="${user != null && !#strings.equals(offer.user.email, user.email)}"
+                       th:href="${'/conversation/start/'+offer.id}" th:text="#{conversation.list.start}"></a></td>
+            </tr>
+            </tbody>
+            <div th:each="error : ${errors}">
+                <span class="text-danger" th:if="${error.equals('Error.offer.price.minus')}"
+                      th:text="#{Error.offer.price.minus}"></span>
+                <span class="text-danger" th:if="${error.equals('Error.offer.sold')}" th:text="#{Error.offer.sold}"></span>
+                <span class="text-danger" th:if="${error.equals('Error.offer.user')}" th:text="#{Error.offer.user}"></span>
+            </div>
+        </table>
+        <div th:if="${#lists.isEmpty(offerList)}" th:text="#{offer.list.msg.offers}"></div>
+    </div>
+    <footer th:replace="fragments/pagination"></footer>
+</div>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

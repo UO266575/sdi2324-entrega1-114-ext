@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org/%22%3E">
+<head th:replace="fragments/head"/>
+<body>
+<!-- Barra de Navegación superior -->
+<nav th:replace="fragments/nav"/>
+<form class="container" method="post" action="/log/delete">
+    <h2 th:text="#{log.list.title}"></h2>
+    <p th:text="#{log.list.desc}"></p>
+    <button type="button" id="allButton" class="btn btn-primary" th:text="#{log.filter.all}"></button>
+    <script>
+        $("#allButton").click(function () {
+            $("#tableLogs").load('/log/list/update');
+        });
+    </script>
+    <button type="button" id="petButton" class="btn btn-primary" th:text="#{log.filter.pet}"></button>
+    <script>
+        $("#petButton").click(function () {
+            $("#tableLogs").load('/log/list/tipe/PET');
+        });
+    </script>
+    <button type="button" id="altaButton" class="btn btn-primary" th:text="#{log.filter.alta}"></button>
+    <script>
+        $("#altaButton").click(function () {
+            $("#tableLogs").load('/log/list/tipe/ALTA');
+        });
+    </script>
+    <button type="button" id="logexButton" class="btn btn-primary" th:text="#{log.filter.logex}"></button>
+    <script>
+        $("#logexButton").click(function () {
+            $("#tableLogs").load('/log/list/tipe/LOGIN-EX');
+        });
+    </script>
+    <button type="button" id="logerrButton" class="btn btn-primary" th:text="#{log.filter.logerr}"></button>
+    <script>
+        $("#logerrButton").click(function () {
+            $("#tableLogs").load('/log/list/tipe/LOGIN-ERR');
+        });
+    </script>
+    <button type="button" id="logoutButton" class="btn btn-primary" th:text="#{log.filter.logout}"></button>
+    <script>
+        $("#logoutButton").click(function () {
+            $("#tableLogs").load('/log/list/tipe/LOGOUT');
+        });
+    </script>
+    <div class="table-responsive">
+        <table class="table table-hover" th:fragment="tableLogs" id="tableLogs">
+            <thead>
+            <tr>
+                <th scope="col" th:text="#{log.list.type}"></th>
+                <th scope="col" th:text="#{log.list.date}"></th>
+                <th scope="col" th:text="#{log.list.description}"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="log : ${logList}">
+                <td scope="row" th:text="${log.type}">PET</td>
+                <td scope="row" th:text="${log.date}">Fecha</td>
+                <td scope="row" th:text="${log.description}">Descripcion</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" class="btn btn-danger"
+            onclick="return confirm('¿Estás seguro de que deseas eliminar todos los logs?')"
+            th:text="#{log.list.btn.del}"></button>
+</form>
+<footer th:replace="fragments/footer"/>
+</body>
+</html>

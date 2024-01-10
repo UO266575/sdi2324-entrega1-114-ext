@@ -1,0 +1,28 @@
+<div class="text-center">
+  <ul class="pagination justify-content-center">
+    <!-- Primera -->
+    <li class="page-item" >
+      <a class="page-link" th:href="@{'?page=0' + ${(searchText != null ? ('&searchText=' + searchText) : '')}}" th:text="#{pagination.first}"></a>
+    </li>
+    <!-- Anterior (si la hay ) -->
+    <li class="page-item" th:if='${page.getNumber()-1 >= 0}'>
+      <a class="page-link" th:href="@{'?page='+${page.getNumber()-1} + ${(searchText != null ? ('&searchText=' + searchText) : '')} }"
+         th:text="${page.getNumber()}"></a>
+    </li>
+    <!-- Actual -->
+    <li class="page-item active" >
+      <a class="page-link" th:href="@{'?page='+${page.getNumber()} + ${(searchText != null ? ('&searchText=' + searchText) : '')}}"
+         th:text="${page.getNumber()+1}"></a>
+    </li>
+    <!-- Siguiente (si la hay) -->
+    <li class="page-item" th:if='${page.getNumber()+1 <= page.getTotalPages()-1}'>
+      <a class="page-link" th:href="@{'?page='+${page.getNumber()+1} + ${(searchText != null ? ('&searchText=' + searchText) : '')} }"
+         th:text="${page.getNumber()+2}"></a>
+    </li>
+    <!-- Última -->
+    <li class="page-item" >
+      <a class="page-link"
+         th:href="@{'?page='+${page.getTotalPages()-1} + ${(searchText != null ? ('&searchText=' + searchText) : '')}}" th:text="#{pagination.last}"></a>
+    </li>
+  </ul>
+</div>

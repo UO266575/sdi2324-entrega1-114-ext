@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="fragments/head"/>
+<body>
+<nav th:replace="fragments/nav"/>
+<div id="users" class="container" style="text-align: center">
+    <h2 th:text="#{welcome.message}"></h2>
+    <h3 th:text="#{welcome.messageprivate}"></h3>
+
+    <p th:text="#{welcome.autenticate}"></p>
+    <span sec:authentication="principal.username" th:inline="text"></span>
+
+    <p th:text="#{welcome.wallapop}"></p>
+</div>
+<footer th:replace="fragments/footer"/>
+</body>
+</html>

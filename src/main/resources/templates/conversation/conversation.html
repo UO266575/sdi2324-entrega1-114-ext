@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head"/>
+<body>
+<head th:replace="fragments/nav"/>
+<div class="container" id="main-container">
+    <h1 th:text="#{conversation.title} + ' &quot' + ${offer.title} + '&quot'"></h1>
+    <div style="height: 60vh; overflow: auto">
+        <table class="table table-hover" th:fragment="tableMessages" id="tableMessages">
+            <tr th:each="message : ${tableMessages}">
+                <td>
+                    <div class="messageHeader">
+                        <h2 th:text="${message.user.name}" style="flex-grow: 1;"></h2>
+                        <p th:text="${message.date}"></p>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text" th:text="${message.text}"></p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <form class="form-horizontal" method="post"
+          th:action="${formState == 0 ? '/conversation/start/' + offer.id : '/conversation/resume/' + conversation.id}"
+          th:object="${message}">
+        <div style="display:flex; justify-content: center;">
+            <label class="control-label col-sm-2" for="text" th:text="#{conversation.sendMessage}"></label>
+            <input type="text" class="form-control" id="text" name="text"
+                   placeholder="Mensaje" th:value="${message.text}" required="true"/>
+            <button type="submit" class="btn btn-primary" id="sendMessage" th:text="#{conversation.sendButton}"></button>
+        </div>
+        <span class="text-danger" th:if="${#fields.hasErrors('text')}" th:errors="*{text}"></span>
+    </form>
+</div>
+<script th:inline="javascript">
+    setInterval(function() {
+        let urlUpdate = '/conversation/start/update/'+[[${conversation.id}]];
+        $("#tableMessages").load(urlUpdate);
+    }
+    , 1000);
+</script>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>

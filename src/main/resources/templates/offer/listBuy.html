@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/head"/>
+<body>
+<head th:replace="fragments/nav"/>
+<div class="container" id="main-container">
+  <h2 th:text="#{offer.listbuy.title}"></h2>
+  <p th:text="#{offer.list.msg}"></p>
+  <button type="button" id="updateButton" class="btn btn-primary" th:text="#{user.list.btn.act}"></button>
+  <script>
+    $( "#updateButton" ).click(function() {
+      $("#tableOffersB").load('/offer/list/updateBuy');
+    });
+  </script>
+  <div class="table-responsive">
+    <table class="table table-hover" th:fragment="tableOffersB" id="tableOffersB">
+      <thead>
+      <tr>
+        <th scope="col" th:text="#{offer.list.data.image}"></th>
+        <th scope="col" th:text="#{offer.list.data.title}"></th>
+        <th scope="col" th:text="#{offer.list.data.details}"></th>
+        <th scope="col" th:text="#{offer.list.data.price}"></th>
+        <th scope="col" th:text="#{offer.listbuy.data.email}"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="filas-listBuy-offers" th:each="offer : ${offerListB}">
+        <td>
+          <img th:if="${offer.image != null and offer.image != ''}" th:src="${offer.image}"
+               width="56" height="56" style="object-fit: cover;">
+          <img th:unless="${offer.image != null and offer.image != ''}" src="/images/example.png"
+               width="56" height="56"/>
+        </td>
+        <td th:text="${offer.title}"></td>
+        <td th:text="${offer.details}"></td>
+        <td th:text="${offer.price}"></td>
+        <td th:text="${offer.user.email}"></td>
+      </tr>
+      </tbody>
+    </table>
+    <div th:if="${#lists.isEmpty(offerListB)}" th:text="#{offer.listbuy.msg.offers}"></div>
+  </div>
+</div>
+<footer th:replace="fragments/footer"></footer>
+</body>
+</html>
