@@ -116,6 +116,10 @@ public class UsersController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.getName().equals("anonymousUser")) {
+            return "redirect:home";
+        }
         model.addAttribute("user", new User());
         return "login";
     }
@@ -135,6 +139,10 @@ public class UsersController {
 
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(!auth.getName().equals("anonymousUser")) {
+            return "redirect:home";
+        }
         model.addAttribute("user", new User());
         return "signup";
     }
