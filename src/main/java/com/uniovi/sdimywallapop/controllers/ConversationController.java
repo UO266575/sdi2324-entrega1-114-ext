@@ -57,6 +57,7 @@ public class ConversationController {
         model.addAttribute("conversation", conversation);
         model.addAttribute("tableMessages", conversation.getMessages());
 
+        model.addAttribute("user", buyer);
         model.addAttribute("buyer", buyer);
         model.addAttribute("seller", seller);
         model.addAttribute("offer", offer);
