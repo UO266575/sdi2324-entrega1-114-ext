@@ -184,7 +184,7 @@ class SdiMywallapopApplicationTests {
         PO_HomeView.clickOption(driver, "login", "class", "btn btn-primary");
         //Rellenamos el formulario
         PO_LoginView.fillLoginForm(driver, " ", " ");
-        // Comprobamos que es el admin
+        // Comprobamos que no ha iniciado sesión
         String checkText = "Identificate";
         List<WebElement> result = PO_View.checkElementBy(driver, "text", checkText);
         Assertions.assertEquals(checkText, result.get(0).getText());

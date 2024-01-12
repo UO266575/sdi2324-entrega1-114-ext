@@ -2,10 +2,7 @@ package com.uniovi.sdimywallapop.controllers;
 
 import com.uniovi.sdimywallapop.entities.Log;
 import com.uniovi.sdimywallapop.entities.User;
-import com.uniovi.sdimywallapop.services.LogServices;
-import com.uniovi.sdimywallapop.services.RolesService;
-import com.uniovi.sdimywallapop.services.SecurityService;
-import com.uniovi.sdimywallapop.services.UsersService;
+import com.uniovi.sdimywallapop.services.*;
 import com.uniovi.sdimywallapop.validators.SignUpFormValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -30,9 +27,10 @@ public class UsersController {
     private UsersService usersService;
     @Autowired
     private LogServices logServices;
-
     @Autowired
     private SecurityService securityService;
+    @Autowired
+    private ConversationService conversationService;
 
     @RequestMapping("/user/list")
     public String getListado(Model model, Principal principal) {
@@ -59,13 +57,17 @@ public class UsersController {
     }
 
     @PostMapping("/user/delete")
-    public String delete(
-            @RequestParam(value = "ck", required = false) List<Long> userIds) {
-
+    public String delete(@RequestParam(value = "ck", required = false) List<Long> userIds) {
         if (userIds == null || userIds.isEmpty()) {
             // No se han seleccionado usuarios para eliminar
             return "redirect:/user/list";
         }
+        //Primero eliminamos las conversaciones de las que forme parte el usuario
+        userIds.stream()
+                .forEach(id -> {
+                    List<Long> convs = conversationService.searchConversationsTakingPartBy(usersService.getUser(id));
+                    convs.stream().forEach(convId -> conversationService.deleteConversation(convId));
+                });
         // Elimina los usuarios seleccionados
         usersService.deleteUsers(userIds);
 
@@ -117,7 +119,7 @@ public class UsersController {
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")) {
+        if (!auth.getName().equals("anonymousUser")) {
             return "redirect:home";
         }
         model.addAttribute("user", new User());
@@ -140,7 +142,7 @@ public class UsersController {
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signup(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(!auth.getName().equals("anonymousUser")) {
+        if (!auth.getName().equals("anonymousUser")) {
             return "redirect:home";
         }
         model.addAttribute("user", new User());
