@@ -126,8 +126,8 @@ public class OffersController {
     @RequestMapping(value = "/offer/add", method = RequestMethod.POST)
     public String setOffer(Principal principal, Model model, @Validated Offer offer, BindingResult result) {
         offerFormValidator.validate(offer, result);
+        User user = usersService.getUserByEmail(principal.getName());
         if (offer.isDestacado()){
-            User user = usersService.getUserByEmail(principal.getName());
             if(user.getMoney()<20){
                 result.rejectValue("destacado", "Error.offer.destacado.money");
             } else {
@@ -136,11 +136,10 @@ public class OffersController {
         }
         if (result.hasErrors()) {
             model.addAttribute("offerList", offersService.getOffers());
+            model.addAttribute("user", user);
             return "offer/add";
         }
         offer.setCreationDate(new Date());
-        String email = principal.getName(); // email es el name de la autenticación
-        User user = usersService.getUserByEmail(email);
         offer.setUser(user);
         offersService.addOffer(offer);
         return "redirect:/offer/myList";
